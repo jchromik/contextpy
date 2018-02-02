@@ -140,7 +140,7 @@ class _after(_advice):
 
 class _stop(_advice):
 	def __call__(self, context, args, kwargs):
-		raise Exception, "called proceed() in innermost function, this probably means that you don't have a base method (`around` advice in None layer) or the base method itself calls proceed()"
+		raise Exception("called proceed() in innermost function, this probably means that you don't have a base method (`around` advice in None layer) or the base method itself calls proceed()")
 
 def proceed(*args, **kwargs):
 	context = _tls.context
@@ -221,7 +221,7 @@ class _layeredmethoddescriptor(object):
 		if hasattr(when, "when"):
 			when = when.when
 
-		assert isinstance(layer_, (layer, types.NoneType))
+		assert isinstance(layer_, (layer, type(None)))
 		assert issubclass(when, _advice)
 
 		self.methods = self.methods + [
@@ -264,7 +264,7 @@ def getMethodName(method):
 		return method.__name__	
 
 def __common(layer_, guard, when):
-	assert isinstance(layer_, (layer, types.NoneType)), "layer_ argument must be a layer instance or None"
+	assert isinstance(layer_, (layer, type(None))), "layer_ argument must be a layer instance or None"
 	assert callable(guard), "guard must be callable"
 	assert issubclass(when, _advice)
 
