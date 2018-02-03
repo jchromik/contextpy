@@ -1,10 +1,10 @@
 from __future__ import with_statement
-from contextpy import layer, proceed, activelayer, activelayers, inactivelayer, after, around, before, base, globalActivateLayer, globalDeactivateLayer
+from contextpy import Layer, proceed, activelayer, activelayers, inactivelayer, after, around, before, base, global_activate_layer, global_deactivate_layer
 import unittest
 
-whoLayer = layer("whoLayer")
-detailsLayer = layer("DetailsLayer")
-yearLayer = layer("YearLayer")
+whoLayer = Layer("whoLayer")
+detailsLayer = Layer("DetailsLayer")
+yearLayer = Layer("YearLayer")
 
 class Greeting(object):
 
@@ -179,20 +179,20 @@ class TestContextPy(unittest.TestCase):
     
     def testGlobalActivation(self):
         self.assertEqual(self.greeting.__str__(), "Hello")
-        globalActivateLayer(whoLayer)
+        global_activate_layer(whoLayer)
         self.assertEqual(self.greeting.__str__(), "Hello World")
-        globalActivateLayer(detailsLayer)
+        global_activate_layer(detailsLayer)
         self.assertEqual(self.greeting.__str__(), "Hello World from Potsdam in 2008")
-        globalDeactivateLayer(whoLayer)
+        global_deactivate_layer(whoLayer)
         self.assertEqual(self.greeting.__str__(), "Hello from Potsdam in 2008")
-        globalDeactivateLayer(detailsLayer)
+        global_deactivate_layer(detailsLayer)
         self.assertEqual(self.greeting.__str__(), "Hello")
         
         # Test Exception Handling
-        globalActivateLayer(whoLayer)
-        self.assertRaises(ValueError, globalActivateLayer, whoLayer)
-        globalDeactivateLayer(whoLayer)
-        self.assertRaises(ValueError, globalDeactivateLayer, whoLayer)
+        global_activate_layer(whoLayer)
+        self.assertRaises(ValueError, global_activate_layer, whoLayer)
+        global_deactivate_layer(whoLayer)
+        self.assertRaises(ValueError, global_deactivate_layer, whoLayer)
         
     def testYearLayer(self):
         self.assertEqual(self.greeting.year, 2008)
