@@ -6,3 +6,5 @@ python:
   - "3.6"
 script:
   - python module/testContextPy.py
+after_success:
+  - coverage run module/testContextPy.py; coveralls
