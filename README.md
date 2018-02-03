@@ -1,3 +1,6 @@
+[![Build Status](https://travis-ci.org/jchromik/contextpy.svg?branch=master)](https://travis-ci.org/jchromik/contextpy)
+[![Coverage Status](https://coveralls.io/repos/github/jchromik/contextpy/badge.svg?branch=master)](https://coveralls.io/github/jchromik/contextpy)
+
 # ContextPy
 
 This project aims at improving ContextPy by Christian Schubert and Michael Perscheid.
