@@ -8,12 +8,23 @@ It is based on [ContextPy 1.1](https://pypi.python.org/pypi/ContextPy).
 
 ## Improvements
 
- - [x] Make ContextPy run on Python 3.x
- - [ ] Lint code to be more pythonic (variable naming, spaces, etc.)
- - [ ] Address behavioral anomalies (E.g. layers can be activated twice using thread-local **and** system-global layer stack. Behavioral changes will be listed below.)
- - [ ] Describe interface of ContextPy in module's `README`
- - [ ] Test still uncovered lines of code
+- [x] Make ContextPy run on Python 3.x
+- [x] Lint code to be more pythonic (variable naming, spaces, etc.)
+- [ ] In-code documentation (docstrings)
+- [ ] Address behavioral anomalies: For example, layers can be activated twice using thread-local **and** system-global layer stack. Changes will be listed below.
+- [ ] Describe interface of ContextPy in module's `README`
+- [ ] Test still uncovered lines of code
 
-## Behavioral Changes over version 1.1
+## Changes over Version 1.1
 
- - *no changes yet*
+### Behavioral Changes
+
+- *no changes yet*
+
+### Interface Changes
+
+- Renamed `layer` class to `Layer` (capitalized)
+- Renamed `globalActivateLayer` method to `global_activate_layer` (lowercase and with underscore)
+- Renamed `globalDecctivateLayer` method to `global_deactivate_layer` (lowercase and with underscore)
+
+These changes were made to comply with [PEP 8](https://www.python.org/dev/peps/pep-0008/).
