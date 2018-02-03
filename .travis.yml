@@ -4,6 +4,8 @@ python:
   - "2.7"
   - "3.5"
   - "3.6"
+install:
+  - pip install coverage coveralls
 script:
   - python module/testContextPy.py
 after_success:
