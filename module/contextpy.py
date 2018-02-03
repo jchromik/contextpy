@@ -38,7 +38,7 @@ _BASELAYERS = (None,)
 
 class TLS(threading.local):
     def __init__(self):
-        super().__init__()
+        super(threading.local, self).__init__() # pylint: disable=bad-super-call
         self.context = None
         self.activelayers = ()
 
