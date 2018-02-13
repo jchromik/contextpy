@@ -13,7 +13,7 @@ It is based on [ContextPy 1.1](https://pypi.python.org/pypi/ContextPy).
 - [ ] In-code documentation (docstrings)
 - [ ] Address behavioral anomalies: For example, layers can be activated twice using thread-local **and** system-global layer stack. Changes will be listed below.
 - [ ] Describe interface of ContextPy in module's `README`
-- [ ] Test still uncovered lines of code
+- [x] Test still uncovered lines of code
 
 ## Changes over Version 1.1
 

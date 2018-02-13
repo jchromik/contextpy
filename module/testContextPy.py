@@ -118,6 +118,11 @@ class Address(object):
         result = " ".join((__result__, "After"))
         return result
 
+class Nonsense(object):
+    @around(whoLayer)
+    def just_call_proceed(self):
+        proceed()
+
 # At the first element of all partial methods, @base is not necessary
 @base
 def answerFunction(string):
@@ -277,6 +282,11 @@ class TestContextPy(unittest.TestCase):
         with activelayers(whoLayer, detailsLayer, yearLayer):
             with inactivelayers(detailsLayer, yearLayer):
                 self.assertEqual(self.greeting.__str__(), "Hello World")
+
+    def testProceedInInnermostThrowsException(self):
+        nonsense = Nonsense()
+        with activelayer(whoLayer):
+            self.assertRaises(Exception, nonsense.just_call_proceed)
 
 if __name__ == '__main__':
     unittest.main()

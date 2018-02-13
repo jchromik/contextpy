@@ -169,8 +169,7 @@ class _layeredmethoddescriptor(object):
         self._cache = {}
 
     def _clear_cache(self):
-        for key in self._cache:
-            self._cache.pop(key, None)
+        self._cache = {}
 
     def cache(self):
         return self._cache
@@ -197,11 +196,6 @@ class _layeredmethoddescriptor(object):
         return list(self._methods)
 
     def register_method(self, method, when=_around, layer_=None, guard=_true, method_name=""):
-        if method_name == "":
-            method_name = method.__name__
-        if hasattr(when, "when"):
-            when = when.when
-
         assert isinstance(layer_, (Layer, type(None)))
         assert issubclass(when, _advice)
 
