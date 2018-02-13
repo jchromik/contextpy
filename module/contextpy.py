@@ -62,9 +62,6 @@ class _LayerManager(object):
         self._layers = layers
         self._old_layers = ()
 
-    def _get_active_layers(self):
-        return self._old_layers
-
     def __enter__(self):
         self._old_layers = _TLS.activelayers
         _TLS.activelayers = tuple(self._get_active_layers())
