@@ -1,8 +1,7 @@
-from __future__ import with_statement
 from contextpy import Layer, proceed, activelayer, activelayers, inactivelayer, after, around, before, base, global_activate_layer, global_deactivate_layer
 import unittest
 
-whoLayer = Layer("whoLayer")
+whoLayer = Layer("WhoLayer")
 detailsLayer = Layer("DetailsLayer")
 yearLayer = Layer("YearLayer")
 
@@ -266,6 +265,13 @@ class TestContextPy(unittest.TestCase):
         with activelayer(detailsLayer):
             self.assertEqual(germanGreet.hallo("Hallo"), "Deutsch: Hallo")
 
+    def testStringRepresentations(self):
+        self.assertEqual(whoLayer.__str__(), "<layer WhoLayer>")
+        self.assertEqual(detailsLayer.__str__(), "<layer DetailsLayer>")
+        self.assertEqual(yearLayer.__str__(), "<layer YearLayer>")
+        self.assertEqual(whoLayer.__repr__(), "layer(name=\"WhoLayer\")")
+        self.assertEqual(detailsLayer.__repr__(), "layer(name=\"DetailsLayer\")")
+        self.assertEqual(yearLayer.__repr__(), "layer(name=\"YearLayer\")")
 
 if __name__ == '__main__':
     unittest.main()
