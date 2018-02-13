@@ -1,4 +1,4 @@
-from contextpy import Layer, proceed, activelayer, activelayers, inactivelayer, after, around, before, base, global_activate_layer, global_deactivate_layer
+from contextpy import Layer, proceed, activelayer, activelayers, inactivelayer, inactivelayers, after, around, before, base, global_activate_layer, global_deactivate_layer
 import unittest
 
 whoLayer = Layer("WhoLayer")
@@ -272,6 +272,11 @@ class TestContextPy(unittest.TestCase):
         self.assertEqual(whoLayer.__repr__(), "layer(name=\"WhoLayer\")")
         self.assertEqual(detailsLayer.__repr__(), "layer(name=\"DetailsLayer\")")
         self.assertEqual(yearLayer.__repr__(), "layer(name=\"YearLayer\")")
+
+    def testInactiveLayers(self):
+        with activelayers(whoLayer, detailsLayer, yearLayer):
+            with inactivelayers(detailsLayer, yearLayer):
+                self.assertEqual(self.greeting.__str__(), "Hello World")
 
 if __name__ == '__main__':
     unittest.main()
