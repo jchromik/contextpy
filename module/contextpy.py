@@ -104,9 +104,6 @@ class _advice(object):
         # Kind of instance method, class or static mehtod (binding needed)
         return self._func.__get__(context[0], context[1])(*args, **kwargs)
 
-    def __call__(self, context, args, kwargs):
-        raise NotImplementedError
-
     @classmethod
     def createchain(cls, methods):
         if not methods:
@@ -166,24 +163,6 @@ class _layeredmethodinvocationproxy(object):
         result = advice(context, args, kwargs)
         return result
 
-    def get_methods(self):
-        return self._descriptor.methods
-
-    def set_methods(self, methods):
-        self._descriptor.methods = methods
-
-    def get_name(self):
-        return self._descriptor.methods[-1][1].__name__
-
-    def register_method(self, method, when=_around, layer_=None, guard=_true):
-        self._descriptor.register_method(method, when, layer_, guard)
-
-    def unregister_method(self, method, layer_=None):
-        self._descriptor.unregister_method(method, layer_)
-
-    methods = property(get_methods, set_methods)
-    __name__ = property(get_name)
-
 class _layeredmethoddescriptor(object):
     def __init__(self, methods):
         self._methods = methods
@@ -228,11 +207,6 @@ class _layeredmethoddescriptor(object):
 
         self.methods = self.methods + [
             (layer_, method, when, guard, method_name)]
-
-    def unregister_method(self, method, layer_=None):
-        self.methods = [lmwgm
-                        for lmwgm in self.methods
-                        if lmwgm[1] is not method or lmwgm[0] is not layer_]
 
     methods = property(get_methods, set_methods)
 
