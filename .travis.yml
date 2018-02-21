@@ -7,6 +7,6 @@ python:
 install:
   - pip install coverage coveralls
 script:
-  - python module/testContextPy.py
+  - python module/test_contextpy.py
 after_success:
-  - coverage run module/testContextPy.py; coveralls
+  - coverage run module/test_contextpy.py; coveralls

@@ -1,5 +1,8 @@
 # License (MIT License)
 #
+# Copyright (c) 2018 Jonas Chromik
+# jonas.chromik@student.hpi.uni-potsdam.de
+#
 # Copyright (c) 2007-2008 Christian Schubert and Michael Perscheid
 # michael.perscheid@hpi.uni-potsdam.de, http://www.hpi.uni-potsdam.de/swa/
 #
