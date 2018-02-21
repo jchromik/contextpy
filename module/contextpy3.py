@@ -26,7 +26,7 @@
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 """
-This is ContextPy3 which provides context-oriented programming
+This is ContextPy3, which provides context-oriented programming
 for both Python2 and Python3.
 """
 
