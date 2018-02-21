@@ -1,5 +1,9 @@
-from contextpy3 import Layer, proceed, activelayer, activelayers, inactivelayer, inactivelayers, after, around, before, base, global_activate_layer, global_deactivate_layer
 import unittest
+
+from contextpy3 import (
+    Layer, proceed, active_layer, active_layers, inactive_layer,
+    inactive_layers, after, around, before, base, global_activate_layer,
+    global_deactivate_layer)
 
 whoLayer = Layer("WhoLayer")
 detailsLayer = Layer("DetailsLayer")
@@ -153,32 +157,32 @@ class TestContextPy(unittest.TestCase):
 
     def testWithSingleLayer(self):
         self.assertEqual(self.greeting.__str__(), "Hello")
-        with activelayer(whoLayer):
+        with active_layer(whoLayer):
             self.assertEqual(self.greeting.__str__(), "Hello World")
         self.assertEqual(self.greeting.__str__(), "Hello")
         
     def testWithDoubleLayer(self):
         self.assertEqual(self.greeting.__str__(), "Hello")
-        with activelayer(detailsLayer):
+        with active_layer(detailsLayer):
             self.assertEqual(self.greeting.__str__(), "Hello from Potsdam in 2008")
-            with activelayer(whoLayer):
+            with active_layer(whoLayer):
                 self.assertEqual(self.greeting.__str__(), "Hello from Potsdam in 2008 World")
-                with inactivelayer(whoLayer):
+                with inactive_layer(whoLayer):
                     self.assertEqual(self.greeting.__str__(), "Hello from Potsdam in 2008")
             self.assertEqual(self.greeting.__str__(), "Hello from Potsdam in 2008")
-        with activelayers(detailsLayer, whoLayer):
+        with active_layers(detailsLayer, whoLayer):
             self.assertEqual(self.greeting.__str__(), "Hello from Potsdam in 2008 World")
-        with activelayers(whoLayer, detailsLayer):
+        with active_layers(whoLayer, detailsLayer):
             self.assertEqual(self.greeting.__str__(), "Hello World from Potsdam in 2008")
         self.assertEqual(self.greeting.__str__(), "Hello")
     
     def testMultipleActivation(self):
         self.assertEqual(self.greeting.__str__(), "Hello")
-        with activelayer(detailsLayer):
+        with active_layer(detailsLayer):
             self.assertEqual(self.greeting.__str__(), "Hello from Potsdam in 2008")
-            with activelayer(detailsLayer):
+            with active_layer(detailsLayer):
                 self.assertEqual(self.greeting.__str__(), "Hello from Potsdam in 2008")
-                with activelayer(whoLayer):
+                with active_layer(whoLayer):
                     self.assertEqual(self.greeting.__str__(), "Hello from Potsdam in 2008 World")
     
     def testGlobalActivation(self):
@@ -202,7 +206,7 @@ class TestContextPy(unittest.TestCase):
         self.assertEqual(self.greeting.year, 2008)
         self.greeting.setYear(1999)
         self.assertEqual(self.greeting.year, 1999)
-        with activelayer(yearLayer):
+        with active_layer(yearLayer):
             self.greeting.setYear(1998)    
         self.assertEqual(self.greeting.year, 2000)
         self.greeting.setYear(1998)
@@ -210,7 +214,7 @@ class TestContextPy(unittest.TestCase):
 
     def testCrossCutLayer(self):
         self.assertEqual(self.greeting.__str__(), "Hello")
-        with activelayer(detailsLayer):
+        with active_layer(detailsLayer):
             self.assertEqual(self.greeting.__str__(), "Hello from Potsdam in 2008")
             self.greeting.setYear(1999)
             self.assertEqual(self.greeting.__str__(), "Hello from Potsdam in 500")
@@ -218,48 +222,48 @@ class TestContextPy(unittest.TestCase):
         self.assertEqual(self.address.__str__(), "Potsdam")
         self.greeting.setYear(2008)
         self.assertEqual(self.address.__str__(), "Potsdam")                
-        with activelayer(detailsLayer):
+        with active_layer(detailsLayer):
             self.assertEqual(self.greeting.__str__(), "Hello from Potsdam in 2008")
             self.assertEqual(self.address.__str__(), "Saarmunder Str. 9 Potsdam 14478")
     
     def testClassMethods(self):
         self.assertEqual(Address("city", "street", 123).classAddress("Test Address"), "Address: Test Address")
         self.assertEqual(Address.classAddress("Test Address"), "Address: Test Address")
-        with activelayer(detailsLayer):
+        with active_layer(detailsLayer):
             self.assertEqual(Address.classAddress("Test Address"), "Address: Test Address More Details")
-        with activelayer(whoLayer):
+        with active_layer(whoLayer):
             self.assertEqual(Address("city", "street", 123).classAddress("Test Address"), "Class Method Address: Test Address After")
-            with activelayer(detailsLayer):
+            with active_layer(detailsLayer):
                 self.assertEqual(Address.classAddress("Test Address"), "Class Method Address: Test Address More Details After")
 
     def testStaticMethods(self):
         self.assertEqual(Address.staticAddress("Test Address"), "Address: Test Address")
         self.assertEqual(Address("city", "street", 123).staticAddress("Test Address"), "Address: Test Address")
-        with activelayer(detailsLayer):
+        with active_layer(detailsLayer):
             self.assertEqual(Address.staticAddress("Test Address"), "Address: Test Address More Details")
-        with activelayer(whoLayer):
+        with active_layer(whoLayer):
             self.assertEqual(Address.staticAddress("Test Address"), "Address: Test Address After")
-            with activelayer(detailsLayer):
+            with active_layer(detailsLayer):
                 self.assertEqual(Address("city", "street", 123).staticAddress("Test Address"), "Address: Test Address More Details After")
     
     def testFunctions(self):
         self.assertEqual(answerFunction("Hello World"), "Hello World")
-        with activelayer(whoLayer):
+        with active_layer(whoLayer):
             self.assertEqual(answerFunction("Hello World"), "answerFunction: Hello World")
-        with activelayer(detailsLayer):
+        with active_layer(detailsLayer):
             self.assertEqual(answerFunction("Hello World"), "Hello World (Normal Python Module Function)")
-            with activelayer(whoLayer):
+            with active_layer(whoLayer):
                 self.assertEqual(answerFunction("Hello World"), "answerFunction: Hello World (Normal Python Module Function)")
         self.assertEqual(answerFunction("Hello World"), "Hello World")
     
     def testInheritance(self):
         greetings = GermanGreeting("Hallo", "Welt", "Potsdam", 2008)
         self.assertEqual(greetings.__str__(), "Hallo")
-        with activelayer(whoLayer):
+        with active_layer(whoLayer):
             self.assertEqual(greetings.__str__(), "Hallo Welt Aus: Welt")
-        with activelayer(detailsLayer):
+        with active_layer(detailsLayer):
             self.assertEqual(greetings.__str__(), "German: Hallo from Potsdam in 2008")
-            with activelayer(whoLayer):
+            with active_layer(whoLayer):
                 self.assertEqual(greetings.__str__(), "German: Hallo from Potsdam in 2008 Welt Aus: Welt")
         
     def testLateMethodBinding(self):
@@ -267,7 +271,7 @@ class TestContextPy(unittest.TestCase):
         self.assertRaises(AttributeError, getattr, germanGreet, "hallo")
         GermanGreeting.hallo = hallo
         self.assertEqual(germanGreet.hallo("Hallo"), "Hallo")
-        with activelayer(detailsLayer):
+        with active_layer(detailsLayer):
             self.assertEqual(germanGreet.hallo("Hallo"), "Deutsch: Hallo")
 
     def testStringRepresentations(self):
@@ -278,20 +282,20 @@ class TestContextPy(unittest.TestCase):
         self.assertEqual(detailsLayer.__repr__(), "layer(name=\"DetailsLayer\")")
         self.assertEqual(yearLayer.__repr__(), "layer(name=\"YearLayer\")")
 
-    def testInactiveLayers(self):
-        with activelayers(whoLayer, detailsLayer, yearLayer):
-            with inactivelayers(detailsLayer, yearLayer):
+    def testInactive_layers(self):
+        with active_layers(whoLayer, detailsLayer, yearLayer):
+            with inactive_layers(detailsLayer, yearLayer):
                 self.assertEqual(self.greeting.__str__(), "Hello World")
 
     def testProceedInInnermostThrowsException(self):
         nonsense = Nonsense()
-        with activelayer(whoLayer):
+        with active_layer(whoLayer):
             self.assertRaises(Exception, nonsense.just_call_proceed)
 
     def testLayerMerging(self):
         global_activate_layer(whoLayer)
         global_activate_layer(detailsLayer)
-        with activelayer(detailsLayer):
+        with active_layer(detailsLayer):
             self.assertEqual(answerFunction("Hello World"),
                              "answerFunction: Hello World (Normal Python Module Function)")
         global_deactivate_layer(whoLayer)

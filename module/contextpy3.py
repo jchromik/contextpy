@@ -25,27 +25,33 @@
 # TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+"""
+This is ContextPy3 which provides context-oriented programming
+for both Python2 and Python3.
+"""
+
 import sys
 import threading
 
 __all__ = ['Layer']
-__all__ += ['activelayer', 'activelayers', 'inactivelayer', 'inactivelayers']
+__all__ += ['active_layer', 'active_layers', 'inactive_layer', 'inactive_layers']
 __all__ += ['proceed']
 __all__ += ['before', 'after', 'around', 'base']
 __all__ += ['global_activate_layer', 'global_deactivate_layer']
 
-__version__ = "1.1"
+__version__ = "1.0"
 
-# tuple with layers that are always active
+# system-global layer stack
 _BASELAYERS = (None,)
 
+# thread-local layer stack
 class TLS(threading.local):
     def __init__(self):
         super(threading.local, self).__init__() # pylint: disable=bad-super-call
         self.context = None
-        self.activelayers = ()
+        self.active_layers = ()
 
-_TLS = TLS() # pylint: disable=invalid-name
+_TLS = TLS()
 
 class Layer(object):
     def __init__(self, name=None):
@@ -66,11 +72,11 @@ class _LayerManager(object):
         self._old_layers = ()
 
     def __enter__(self):
-        self._old_layers = _TLS.activelayers
-        _TLS.activelayers = tuple(self._get_active_layers()) # pylint: disable=no-member
+        self._old_layers = _TLS.active_layers
+        _TLS.active_layers = tuple(self._get_active_layers()) # pylint: disable=no-member
 
     def __exit__(self, exc_type, exc_value, exc_tb):
-        _TLS.activelayers = self._old_layers
+        _TLS.active_layers = self._old_layers
 
 class _LayerActivationManager(_LayerManager):
     def _get_active_layers(self):
@@ -80,16 +86,16 @@ class _LayerDeactivationManager(_LayerManager):
     def _get_active_layers(self):
         return [layer for layer in self._old_layers if layer not in self._layers]
 
-def activelayer(layer):
+def active_layer(layer):
     return _LayerActivationManager([layer])
 
-def inactivelayer(layer):
+def inactive_layer(layer):
     return _LayerDeactivationManager([layer])
 
-def activelayers(*layers):
+def active_layers(*layers):
     return _LayerActivationManager(list(layers))
 
-def inactivelayers(*layers):
+def inactive_layers(*layers):
     return _LayerDeactivationManager(list(layers))
 
 class _advice(object):
@@ -160,7 +166,7 @@ class _layeredmethodinvocationproxy(object):
         self._descriptor = descriptor
 
     def __call__(self, *args, **kwargs):
-        layers = merge_layers(_BASELAYERS, _TLS.activelayers)
+        layers = merge_layers(_BASELAYERS, _TLS.active_layers)
         advice = (
             self._descriptor.cache().get(layers)
             or self._descriptor.cache_methods(layers))
@@ -188,10 +194,10 @@ class _layeredmethoddescriptor(object):
             list(reversed(
                 [(lmwgm[1], lmwgm[2])
                  for lmwgm in self._methods
-                 if lmwgm[0] is currentlayer and lmwgm[3](activelayers)]
+                 if lmwgm[0] is currentlayer and lmwgm[3](active_layers)]
             )) for currentlayer in layers], [])
 
-        self._cache[activelayers] = result = _advice.createchain(methods)
+        self._cache[active_layers] = result = _advice.createchain(methods)
         return result
 
     def set_methods(self, methods):
@@ -215,7 +221,7 @@ class _layeredmethoddescriptor(object):
 
     # Used only for functions (no binding or invocation proxy needed)
     def __call__(self, *args, **kwargs):
-        layers = merge_layers(_BASELAYERS, _TLS.activelayers)
+        layers = merge_layers(_BASELAYERS, _TLS.active_layers)
         advice = self._cache.get(layers) or self.cache_methods(layers)
 
         # 2x None to identify: do not bound this function
