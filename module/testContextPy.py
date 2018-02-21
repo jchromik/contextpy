@@ -288,5 +288,14 @@ class TestContextPy(unittest.TestCase):
         with activelayer(whoLayer):
             self.assertRaises(Exception, nonsense.just_call_proceed)
 
+    def testLayerMerging(self):
+        global_activate_layer(whoLayer)
+        global_activate_layer(detailsLayer)
+        with activelayer(detailsLayer):
+            self.assertEqual(answerFunction("Hello World"),
+                             "answerFunction: Hello World (Normal Python Module Function)")
+        global_deactivate_layer(whoLayer)
+        global_deactivate_layer(detailsLayer)
+
 if __name__ == '__main__':
     unittest.main()

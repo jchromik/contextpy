@@ -64,7 +64,7 @@ class _LayerManager(object):
 
     def __enter__(self):
         self._old_layers = _TLS.activelayers
-        _TLS.activelayers = tuple(self._get_active_layers())
+        _TLS.activelayers = tuple(self._get_active_layers()) # pylint: disable=no-member
 
     def __exit__(self, exc_type, exc_value, exc_tb):
         _TLS.activelayers = self._old_layers
@@ -145,6 +145,9 @@ def proceed(*args, **kwargs):
 def _true(*_):
     return True
 
+def merge_layers(tuple1, tuple2):
+    return tuple1 + tuple([layer for layer in tuple2 if layer not in tuple1])
+
 class _layeredmethodinvocationproxy(object):
     __slots__ = ("_inst", "_cls", "_descriptor")
 
@@ -154,7 +157,7 @@ class _layeredmethodinvocationproxy(object):
         self._descriptor = descriptor
 
     def __call__(self, *args, **kwargs):
-        layers = _BASELAYERS + _TLS.activelayers
+        layers = merge_layers(_BASELAYERS, _TLS.activelayers)
         advice = (
             self._descriptor.cache().get(layers)
             or self._descriptor.cache_methods(layers))
@@ -209,7 +212,7 @@ class _layeredmethoddescriptor(object):
 
     # Used only for functions (no binding or invocation proxy needed)
     def __call__(self, *args, **kwargs):
-        layers = _BASELAYERS + _TLS.activelayers
+        layers = merge_layers(_BASELAYERS, _TLS.activelayers)
         advice = self._cache.get(layers) or self.cache_methods(layers)
 
         # 2x None to identify: do not bound this function

@@ -11,7 +11,7 @@ It is based on [ContextPy 1.1](https://pypi.python.org/pypi/ContextPy).
 - [x] Make ContextPy run on Python 3.x
 - [x] Lint code to be more pythonic (variable naming, spaces, etc.)
 - [ ] In-code documentation (docstrings)
-- [ ] Address behavioral anomalies: For example, layers can be activated twice using thread-local **and** system-global layer stack. Changes will be listed below.
+- [x] Address behavioral anomalies: For example, layers can be activated twice using thread-local **and** system-global layer stack. Changes will be listed below.
 - [ ] Describe interface of ContextPy in module's `README`
 - [x] Test still uncovered lines of code
 
@@ -19,7 +19,7 @@ It is based on [ContextPy 1.1](https://pypi.python.org/pypi/ContextPy).
 
 ### Behavioral Changes
 
-- *no changes yet*
+- Layer Stack Merging: If a layer is activated in thread-local layer stack (`_TLS.activelayers`) and in system-global layer stack (`_BASELAYERS`), the corresponding partial methods are executed only once. We are merging layer stacks without producing duplicate entries.
 
 ### Interface Changes
 
