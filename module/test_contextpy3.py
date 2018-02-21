@@ -1,4 +1,4 @@
-from contextpy import Layer, proceed, activelayer, activelayers, inactivelayer, inactivelayers, after, around, before, base, global_activate_layer, global_deactivate_layer
+from contextpy3 import Layer, proceed, activelayer, activelayers, inactivelayer, inactivelayers, after, around, before, base, global_activate_layer, global_deactivate_layer
 import unittest
 
 whoLayer = Layer("WhoLayer")
